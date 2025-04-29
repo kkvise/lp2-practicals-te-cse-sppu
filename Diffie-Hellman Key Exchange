@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diffie-Hellman Key Exchange</title>
+    <script src="diffie_hellman.js" defer></script>
+</head>
+<body>
+    <h1>Diffie-Hellman Key Exchange</h1>
+    <p>Enter your private key (Alice):</p>
+    <input type="number" id="alicePrivateKey" placeholder="Enter a private key" />
+    <button onclick="diffieHellman()">Compute</button>
+    <div id="results"></div>
+</body>
+</html>
+
+
+
+diffie_hellman.js
+// Function to perform modular exponentiation
+function modExp(base, exp, mod) {
+    let result = 1;
+    base = base % mod;
+    while (exp > 0) {
+        if (exp % 2 === 1) {
+            result = (result * base) % mod;
+        }
+        exp = Math.floor(exp / 2);
+        base = (base * base) % mod;
+    }
+    return result;
+}
+
+// Function to perform Diffie-Hellman Key Exchange
+function diffieHellman() {
+    // Public parameters (prime number and base)
+    const prime = 23; // Example prime number
+    const base = 5;   // Example base (primitive root)
+
+    // Alice's private key (entered by the user)
+    const alicePrivateKey = parseInt(document.getElementById("alicePrivateKey").value);
+
+    // Bob's private key (randomly generated)
+    const bobPrivateKey = Math.floor(Math.random() * (prime - 2)) + 1;
+
+    // Compute public keys
+    const alicePublicKey = modExp(base, alicePrivateKey, prime);
+    const bobPublicKey = modExp(base, bobPrivateKey, prime);
+
+    // Compute shared secret keys
+    const aliceSharedKey = modExp(bobPublicKey, alicePrivateKey, prime);
+    const bobSharedKey = modExp(alicePublicKey, bobPrivateKey, prime);
+
+    // Display results
+    document.getElementById("results").innerHTML = `
+        <p>Prime (p): ${prime}</p>
+        <p>Base (g): ${base}</p>
+        <p>Alice's Private Key: ${alicePrivateKey}</p>
+        <p>Bob's Private Key: ${bobPrivateKey}</p>
+        <p>Alice's Public Key: ${alicePublicKey}</p>
+        <p>Bob's Public Key: ${bobPublicKey}</p>
+        <p>Shared Secret Key (Alice): ${aliceSharedKey}</p>
+        <p>Shared Secret Key (Bob): ${bobSharedKey}</p>
+    `;
+}
