@@ -1,0 +1,127 @@
+import tkinter as tk
+from tkinter import scrolledtext
+import random
+import re
+import datetime as dt
+
+# Predefined knowledge base (hardcoded responses)
+responses = {
+    # Expanded Reference Data Dictionary for Chatbot
+
+    # Greetings
+    "hi": "Hello! How can I assist you today?",
+    "hello": "Hi there! How can I help you today?",
+    "hey": "Hey! How’s it going?",
+    "how are you?": "I'm just a bot, but I'm doing great! How about you?",
+    "good morning": "Good morning! Ready to chat?",
+    "good evening": "Good evening! How can I help you tonight?",
+    "bye": "Goodbye! Have a wonderful day ahead!",
+    
+    # General Knowledge
+    "what is the capital of france?": "The capital of France is Paris.",
+    "what is the tallest mountain in the world?": "The tallest mountain in the world is Mount Everest.",
+    "who is the president of the united states?": "The president of the United States is Joe Biden.",
+    "what is the largest ocean in the world?": "The largest ocean in the world is the Pacific Ocean.",
+    "who is the founder of microsoft?": "Microsoft was founded by Bill Gates and Paul Allen.",
+    "who invented the telephone?": "The telephone was invented by Alexander Graham Bell.",
+    "who discovered america?": "Christopher Columbus is credited with discovering America in 1492.",
+    "what is the currency of japan?": "The currency of Japan is the Japanese Yen (JPY).",
+    "what is the capital of canada?": "The capital of Canada is Ottawa.",
+    "what is the smallest country in the world?": "The smallest country in the world is Vatican City.",
+    
+    # Famous People
+    "who is elon musk?": "Elon Musk is the CEO of Tesla, SpaceX, and several other companies. He is known for his work in technology and space exploration.",
+    "who is bill gates?": "Bill Gates is the co-founder of Microsoft and a philanthropist. He is one of the world's wealthiest individuals.",
+    "who is the queen of england?": "The Queen of the United Kingdom is Queen Elizabeth II, but her son, Charles, became King Charles III in 2022.",
+    "who is steve jobs?": "Steve Jobs was the co-founder of Apple and a pioneer of the personal computer revolution.",
+    
+    # Math and Science
+    "what is 2 plus 2?": "2 plus 2 equals 4.",
+    "what is the square root of 25?": "The square root of 25 is 5.",
+    "what is 100 divided by 5?": "100 divided by 5 equals 20.",
+    "what is pi?": "Pi is the ratio of the circumference of a circle to its diameter. Its value is approximately 3.14159.",
+    "what is the speed of light?": "The speed of light is approximately 299,792 kilometers per second (186,282 miles per second).",
+    "what is the law of gravity?": "The law of gravity states that any two masses attract each other with a force that is directly proportional to their mass and inversely proportional to the square of the distance between them.",
+    "what is the atomic number of carbon?": "The atomic number of carbon is 6.",
+    "what is the chemical formula of water?": "The chemical formula of water is H2O.",
+    
+    # Technology
+    "what is artificial intelligence?": "Artificial Intelligence (AI) is the simulation of human intelligence in machines that are programmed to think and learn.",
+    "who invented the computer?": "The first programmable computer was invented by Charles Babbage in the 1830s, though many consider Alan Turing the father of modern computing.",
+    "what is blockchain?": "Blockchain is a decentralized digital ledger that records transactions across many computers so that the record cannot be altered retroactively.",
+    "what is quantum computing?": "Quantum computing is an area of computing that uses quantum mechanics to perform computations that would be too complex for classical computers.",
+    
+    # Entertainment
+    "who is the most famous actor?": "There are many famous actors, but some of the most famous include Tom Hanks, Leonardo DiCaprio, and Robert Downey Jr.",
+    "who won the oscar for best actor in 2020?": "In 2020, the Oscar for Best Actor went to Joaquin Phoenix for his role in the movie *Joker*.",
+    "who directed the movie 'Inception'?": "The movie *Inception* was directed by Christopher Nolan.",
+    "who is the highest-grossing actor?": "As of now, Dwayne 'The Rock' Johnson is one of the highest-grossing actors globally.",
+    "what is the highest-grossing movie of all time?": "The highest-grossing movie of all time is *Avatar* (2009), directed by James Cameron.",
+    "what is the longest-running TV show?": "The longest-running TV show in history is *The Simpsons*, which has been on air since 1989.",
+    
+    # Sports
+    "who won the fifa world cup in 2018?": "The 2018 FIFA World Cup was won by France.",
+    "who is the fastest runner in the world?": "Usain Bolt holds the world record for the fastest 100-meter sprint, completing it in 9.58 seconds.",
+    "who is the best soccer player?": "There is much debate over who is the best soccer player, but Lionel Messi and Cristiano Ronaldo are commonly considered the greatest of all time.",
+    "how many players are on a football team?": "In American football, each team has 11 players on the field at a time.",
+    
+    # Fun Facts
+    "tell me a fun fact": "Did you know that honey never spoils? Archaeologists have found pots of honey in ancient tombs that are over 3,000 years old and still edible!",
+    "tell me a joke": "Why don't skeletons fight each other? They don't have the guts.",
+    "tell me a random fact": "A day on Venus is longer than a year on Venus!",
+    "what animal has the longest lifespan?": "The bowhead whale can live for more than 200 years, making it one of the longest-living animals on Earth.",
+    
+    # Time and Date
+    "what time is it?": "I'm not sure about the current time, but you can check your local clock or use a time app!",
+    "what is today's date?": "Today's date is {0}".format(str(dt.date.today())),
+    "what year is it?": "The current year is {0}".format(str(dt.date.today().year)),
+    
+    # Miscellaneous
+    "what is the meaning of life?": "The meaning of life is a philosophical question that has been debated for centuries. Many believe it's about finding happiness and purpose.",
+    "who won the nobel peace prize in 2020?": "In 2020, the Nobel Peace Prize was awarded to the World Food Programme for its efforts to combat hunger, for its contribution to bettering conditions for peace in conflict-affected areas.",
+    "what is the biggest country by area?": "Russia is the largest country by area, covering over 17 million square kilometers.",
+    "who invented the light bulb?": "The light bulb was invented by Thomas Edison, although several inventors worked on early versions of the electric light.",
+    
+    # Default Response
+    "default": "Sorry, I didn't quite understand that. Could you try asking something else?"
+
+}
+
+# Function to get bot response
+def get_bot_response(user_input):
+    # Convert user input to lowercase for easier matching
+    user_input = user_input.lower()
+
+    # Check if the input matches any of the predefined responses
+    return responses.get(user_input, responses["default"])
+
+# Function to send a message
+def send_message():
+    user_input = user_input_field.get()
+    if user_input:
+        chat_window.config(state=tk.NORMAL)  # Allow text widget to be edited
+        chat_window.insert(tk.END, "You: " + user_input + "\n")  # Display user message
+        user_input_field.delete(0, tk.END)  # Clear input field
+        
+        bot_response = get_bot_response(user_input)  # Get bot response
+        chat_window.insert(tk.END, "Bot: " + bot_response + "\n")  # Display bot response
+        chat_window.config(state=tk.DISABLED)  # Prevent further edits
+
+# Create main window
+root = tk.Tk()
+root.title("Knowledge-Based Chit-Chat Bot")
+
+# Create a scrolled text widget for the chat window
+chat_window = scrolledtext.ScrolledText(root, state=tk.DISABLED, width=50, height=15, wrap=tk.WORD)
+chat_window.grid(row=0, column=0, padx=10, pady=10)
+
+# Create an entry widget for user input
+user_input_field = tk.Entry(root, width=40)
+user_input_field.grid(row=1, column=0, padx=10, pady=10)
+
+# Create a send button
+send_button = tk.Button(root, text="Send", command=send_message)
+send_button.grid(row=1, column=1, padx=10, pady=10)
+
+# Run the Tkinter event loop
+root.mainloop()
