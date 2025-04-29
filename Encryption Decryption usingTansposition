@@ -1,0 +1,60 @@
+def encrypt_message(message, key):
+    """
+    Encrypts the message using the Transposition technique.
+    """
+    # Create an empty list to hold the ciphertext
+    ciphertext = [''] * key
+
+    # Loop through each column in the key
+    for col in range(key):
+        pointer = col
+
+        # Loop through the message and add characters to the ciphertext
+        while pointer < len(message):
+            ciphertext[col] += message[pointer]
+            pointer += key
+
+    # Join the columns to form the encrypted message
+    return ''.join(ciphertext)
+
+
+def decrypt_message(ciphertext, key):
+    """
+    Decrypts the message using the Transposition technique.
+    """
+    # Calculate the number of columns and rows
+    num_columns = int(len(ciphertext) / key)
+    num_rows = key
+    num_shaded_boxes = (num_columns * num_rows) - len(ciphertext)
+
+    # Create an empty list to hold the plaintext
+    plaintext = [''] * num_columns
+
+    col = 0
+    row = 0
+
+    # Loop through the ciphertext and add characters to the plaintext
+    for symbol in ciphertext:
+        plaintext[col] += symbol
+        col += 1
+
+        # If we reach the last column or a shaded box, move to the next row
+        if (col == num_columns) or (col == num_columns - 1 and row >= num_rows - num_shaded_boxes):
+            col = 0
+            row += 1
+
+    # Join the columns to form the decrypted message
+    return ''.join(plaintext)
+
+
+# Driver code
+message = "Hello World"
+key = 4
+
+# Encrypt the message
+encrypted_message = encrypt_message(message, key)
+print("Encrypted Message:", encrypted_message)
+
+# Decrypt the message
+decrypted_message = decrypt_message(encrypted_message, key)
+print("Decrypted Message:", decrypted_message)
