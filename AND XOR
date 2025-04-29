@@ -1,0 +1,16 @@
+def process_string(input_string):
+    print("Original String:", input_string)
+    
+    # XOR each character with 127
+    xor_results = [ord(char) ^ 127 for char in input_string]
+    print("XOR with 127:", xor_results)
+    
+    # AND each character with 127
+    and_results = [ord(char) & 127 for char in input_string]
+    print("AND with 127:", and_results)
+
+# Define the string
+input_string = "Hello World"
+
+# Process the string
+process_string(input_string)
