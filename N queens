@@ -1,73 +1,61 @@
+import time
+# Iterate row by row
+class NQueens_Backtracking:
+    def __init__(self) -> None:
+        self.size = int(input("Enter size of chessboard: "))
+        self.board = [[False]*self.size for _ in range(self.size)]
+        self.count = 0
+    def printBoard(self):
+        for row in self.board:
+            for ele in row:
+                if ele == True:
+                    print("Q",end=" ")
+                else:
+                    print("X",end=" ")
+            print()
+        print()
+    
+    def isSafe(self,row:int,col:int) -> bool:
 
-global N
-N = 4
-def printSolution(board):
-	for i in range(N):
-		for j in range(N):
-			print (board[i][j],end=' ')
-		print()
-# A utility function to check if a queen can
-# be placed on board[row][col]. Note that this
-# function is called when "col" queens are
-# already placed in columns from 0 to col -1.
-# So we need to check only left side for
-# attacking queens
-def isSafe(board, row, col):
-	# Check this row on left side
-	for i in range(col):
-		if board[row][i] == 1:
-			return False
-	# Check upper diagonal on left side
-	for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
-		if board[i][j] == 1:
-			return False
-	# Check lower diagonal on left side
-	for i, j in zip(range(row, N, 1), range(col, -1, -1)):
-		if board[i][j] == 1:
-			return False
-	return True
+        # Check Column(above and below of the (row,col))
+        for i in self.board:
+            if i[col] == True:
+                return False
+        
+        # Check backward slash(\) diagonal only in above direction
+        i = row
+        j = col
+        while i >= 0 and j >= 0:
+            if self.board[i][j] == True:
+                return False
+            i -= 1
+            j -= 1
+        
+        # Check forward slash diagonal(/) only in above direction
+        i = row
+        j = col
+        while i >= 0 and j < self.size:
+            if self.board[i][j] == True:
+                return False
+            i -= 1
+            j += 1
+        
+        return True
+    
+    def solve(self,row:int):
+        if row == self.size:
+            self.count += 1
+            self.printBoard()
+            return
+        
+        for col in range(self.size):
+            if self.isSafe(row,col) == True:
+                self.board[row][col] = True
+                self.solve(row+1)
+                self.board[row][col] = False
 
-def solveNQUtil(board, col):
-	# base case: If all queens are placed
-	# then return true
-	if col >= N:
-		return True
-	# Consider this column and try placing
-	# this queen in all rows one by one
-	for i in range(N):
-		if isSafe(board, i, col):
-			# Place this queen in board[i][col]
-			board[i][col] = 1
-			# recur to place rest of the queens
-			if solveNQUtil(board, col + 1) == True:
-				return True
-			# If placing queen in board[i][col
-			# doesn't lead to a solution, then
-			# queen from board[i][col]
-			board[i][col] = 0
-	# if the queen can not be placed in any row in
-	# this column col then return false
-	return False
-# This function solves the N Queen problem using
-# Backtracking. It mainly uses solveNQUtil() to
-# solve the problem. It returns false if queens
-# cannot be placed, otherwise return true and
-# placement of queens in the form of 1s.
-# note that there may be more than one
-# solutions, this function prints one of the
-# feasible solutions.
-def solveNQ():
-	board = [ [0, 0, 0, 0],
-			[0, 0, 0, 0],
-			[0, 0, 0, 0],
-			[0, 0, 0, 0]
-			]
-
-	if solveNQUtil(board, 0) == False:
-		print ("Solution does not exist")
-		return False
-	printSolution(board)
-	return True
-# driver program to test above function
-solveNQ()
-
+solver = NQueens_Backtracking()
+start = time.time()
+solver.solve(0)
+print(solver.count)
+print(f"Time taken: {time.time() - start}")
