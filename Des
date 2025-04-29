@@ -1,0 +1,49 @@
+#pip install pycryptodome
+from Crypto.Cipher import DES
+from Crypto.Util.Padding import pad, unpad
+import os
+
+def des_encrypt(key, plaintext):
+    """
+    Encrypts the plaintext using DES algorithm.
+    """
+    # Create a DES cipher object
+    cipher = DES.new(key, DES.MODE_ECB)
+    
+    # Pad the plaintext to make it a multiple of 8 bytes
+    padded_text = pad(plaintext.encode('utf-8'), DES.block_size)
+    
+    # Encrypt the padded plaintext
+    ciphertext = cipher.encrypt(padded_text)
+    return ciphertext
+
+def des_decrypt(key, ciphertext):
+    """
+    Decrypts the ciphertext using DES algorithm.
+    """
+    # Create a DES cipher object
+    cipher = DES.new(key, DES.MODE_ECB)
+    
+    # Decrypt the ciphertext
+    decrypted_padded_text = cipher.decrypt(ciphertext)
+    
+    # Unpad the decrypted text
+    plaintext = unpad(decrypted_padded_text, DES.block_size).decode('utf-8')
+    return plaintext
+
+# Driver code
+if __name__ == "__main__":
+    # DES key must be 8 bytes long
+    key = b'8bytekey'  # Example key (must be exactly 8 bytes)
+    
+    # Message to encrypt
+    plaintext = "Hello World"
+    print("Original Message:", plaintext)
+    
+    # Encrypt the message
+    ciphertext = des_encrypt(key, plaintext)
+    print("Encrypted Message:", ciphertext)
+    
+    # Decrypt the message
+    decrypted_message = des_decrypt(key, ciphertext)
+    print("Decrypted Message:", decrypted_message)
